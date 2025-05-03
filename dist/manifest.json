@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "gh-board",
+  "version": "0.1.0",
+  "description": "Github project board extended functionality",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["index.js"],
+      "type": "module",
+      "run_at": "document_start"
+    }
+  ]
+}

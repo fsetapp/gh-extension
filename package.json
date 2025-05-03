@@ -1,5 +1,5 @@
 {
 	"devDependencies": {
-		"vite": "^6.3.4"
+		"vite": "npm:rolldown-vite@latest"
 	}
 }
