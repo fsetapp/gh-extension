@@ -1,25 +1,39 @@
-let o = [];
-const l = () => {
+let a, u = !1;
+new MutationObserver(() => {
+  const t = document.querySelector(
+    "[data-board-column='Done'] [data-dnd-drop-type='card']"
+  );
+  t && !a && !u && (a || (a = new MutationObserver(() => {
+    if (d.length === 0) {
+      const { dataId: o, doneReorderPayload: e } = m();
+      p(o, e);
+    }
+  })), a.observe(t, { childList: !0 }), u = !0, console.log("gh-board extension activated"));
+}).observe(document.documentElement, { childList: !0, subtree: !0 });
+let d = [];
+const m = () => {
   var c;
-  const n = JSON.parse(window["memex-data"].textContent), a = JSON.parse(
+  const t = JSON.parse(window["memex-data"].textContent), o = JSON.parse(
     window["memex-paginated-items-data"].textContent
-  ), r = a.groups.nodes.find(
-    (e) => e.groupValue === "Done"
+  ), e = o.groups.nodes.find(
+    (n) => n.groupValue === "Done"
   ), i = [];
-  for (const e of a.groupedItems) {
-    if (e.groupId !== (r == null ? void 0 : r.groupId)) continue;
-    const s = e.nodes.toSorted(
-      (t, m) => new Date(m.issueClosedAt).getTime() - new Date(t.issueClosedAt).getTime()
+  for (const n of o.groupedItems) {
+    if (n.groupId !== (e == null ? void 0 : e.groupId)) continue;
+    const s = n.nodes.toSorted(
+      (r, l) => new Date(l.issueClosedAt).getTime() - new Date(r.issueClosedAt).getTime()
     );
-    for (let t = 0; t < s.length; t++)
-      i.push({
-        memexProjectItemId: s[t].id,
-        previousMemexProjectItemId: ((c = s[t - 1]) == null ? void 0 : c.id) ?? ""
+    for (let r = 0; r < s.length; r++)
+      i.unshift({
+        memexProjectItemId: s[r].id,
+        previousMemexProjectItemId: ((c = s[r - 1]) == null ? void 0 : c.id) ?? ""
       });
   }
-  for (const e of i)
-    o.push(
-      fetch(`https://github.com/memexes/${n.id}/items`, {
+  return { dataId: t.id, doneReorderPayload: i };
+}, p = (t, o) => {
+  for (const e of o)
+    d.push(
+      fetch(`https://github.com/memexes/${t}/items`, {
         headers: {
           accept: "application/json",
           "content-type": "application/json",
@@ -32,19 +46,10 @@ const l = () => {
       })
     );
   setTimeout(() => {
-    Promise.all(o).then((e) => {
-      o = [];
+    Promise.all(d).then((e) => {
+      d = [];
     }).catch((e) => {
-      o = [];
+      d = [];
     });
   }, 1e3);
 };
-let d, u = !1;
-new MutationObserver(() => {
-  const n = document.querySelector(
-    "[data-board-column='Done'] [data-dnd-drop-type='card']"
-  );
-  n && !d && !u && (d || (d = new MutationObserver(() => {
-    o.length === 0 && l();
-  })), d.observe(n, { childList: !0 }), u = !0, console.log("gh-board extension activated"));
-}).observe(document.documentElement, { childList: !0, subtree: !0 });
